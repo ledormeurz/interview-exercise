@@ -30,11 +30,11 @@ public class TradingStrategy implements PriceListener {
         Iterator<OrderStrategy> strategyIterable = orderStrategies.iterator();
         while ( strategyIterable.hasNext()){
             OrderStrategy orderStrategy = strategyIterable.next();
-            Order order = orderStrategy.priceUpdate(price);
-            if(order != null){
-                applyExecution(security, order);
+            Optional<Order> order = orderStrategy.priceUpdate(price);
+            order.ifPresent(o -> {
+                applyExecution(security, o);
                 strategyIterable.remove();
-            }
+            });
         }
     }
 
