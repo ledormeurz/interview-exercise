@@ -2,6 +2,8 @@ package com.acme.mytrader.strategy;
 
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 public class LimitOrderTest {
@@ -13,9 +15,9 @@ public class LimitOrderTest {
         int orderVolume = 1000;
         OrderStrategy orderStrategy = new LimitOrder(orderWay, orderPrice, orderVolume);
         // when receive price at 101
-        Order order = orderStrategy.priceUpdate(101);
+        Optional<Order> order = orderStrategy.priceUpdate(101);
         // then no order generated
-        assertNull(order);
+        assertFalse(order.isPresent());
     }
 
     @Test
@@ -26,9 +28,10 @@ public class LimitOrderTest {
         int orderVolume = 1000;
         OrderStrategy orderStrategy = new LimitOrder(orderWay, orderPrice, orderVolume);
         // when receive price at 100
-        Order order = orderStrategy.priceUpdate(100);
+        Optional<Order> orderOpt = orderStrategy.priceUpdate(100);
         // then no order generated
-        assertNotNull(order);
+        assertTrue(orderOpt.isPresent());
+        Order order = orderOpt.get();
         assertEquals(orderPrice, order.getPrice(),0);
         assertEquals(orderWay, order.getWay());
         assertEquals(orderVolume, order.getVolume());
@@ -42,9 +45,10 @@ public class LimitOrderTest {
         int orderVolume = 1000;
         OrderStrategy orderStrategy = new LimitOrder(orderWay, orderPrice, orderVolume);
         // when receive price at 99
-        Order order = orderStrategy.priceUpdate(99);
+        Optional<Order> orderOpt  = orderStrategy.priceUpdate(99);
         // then no order generated
-        assertNotNull(order);
+        assertTrue(orderOpt.isPresent());
+        Order order = orderOpt.get();
         assertEquals(orderPrice, order.getPrice(),0);
         assertEquals(orderWay, order.getWay());
         assertEquals(orderVolume, order.getVolume());
@@ -57,10 +61,12 @@ public class LimitOrderTest {
         Way orderWay = Way.SELL;
         int orderVolume = 1000;
         OrderStrategy orderStrategy = new LimitOrder(orderWay, orderPrice, orderVolume);
-        // when receive price at 101
-        Order order = orderStrategy.priceUpdate(110);
+        // when receive price at 110
+
+        Optional<Order> orderOpt  = orderStrategy.priceUpdate(110);
         // then no order generated
-        assertNotNull(order);
+        assertTrue(orderOpt.isPresent());
+        Order order = orderOpt.get();
         assertEquals(orderPrice, order.getPrice(),0);
         assertEquals(orderWay, order.getWay());
         assertEquals(orderVolume, order.getVolume());
